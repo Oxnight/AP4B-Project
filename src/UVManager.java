@@ -3,6 +3,7 @@ import java.util.*;
 public class UVManager {
     private List<UV> listeUV;
     private List<String> listeEleves;
+    private Eleve eleve;
 
     public UVManager() {
         this.listeUV = new ArrayList<>();
@@ -23,9 +24,18 @@ public class UVManager {
         Scanner sc = new Scanner(System.in);
 
         while (true) {
+            if (listeUV.isEmpty()) {
+                System.out.println("Bravo, vous avez fini le TC ! Vous saurez d'ici peu si vous passez en branche.");
+                if (eleve.getNombreUVvalidees() >= 2){
+                    System.out.println("Vous avez l'autorisation de partir en FISE INFORMATIQUE!");
+                }
+                else {
+                    System.out.println("Convoqué devant le 2ème jury de suivi. Très mauvais semestre. Risque de réorientation. Maintien à l'UTBM selon vos résultats. Prenez vos précautions en vue d'une réorientation, inscrivez vous sur ParcourSup.");
+                }
+            }
             System.out.println("\nVoici la liste des UV disponibles :");
             for (UV uv : listeUV) {
-                System.out.println(uv.getName());
+                System.out.println(uv.getName() + " : " + uv.getDescription());
             }
 
             System.out.print("Veuillez choisir une UV : ");
