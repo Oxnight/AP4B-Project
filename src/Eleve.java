@@ -31,11 +31,19 @@ public class Eleve {
         return score;
     }
 
+    public int getNombreUVvalidees() {
+        return nombreUVvalidees;
+    }
+
     public void incrementerNombreUVValidees() {
         this.nombreUVvalidees += 1;
     }
 
     public void incrementerScore() {
         this.score += 1;
+    }
+
+    public void afficherScore() {
+        System.out.println("Score = " + this.score);
     }
 }
