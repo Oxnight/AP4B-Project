@@ -25,6 +25,7 @@ public class Problemes {
 
     public boolean effectuerHypothese() {
         System.out.println("Veuillez entrer votre hypothèse : ");
+        System.out.println("Le problème est : " + enonce);
         Scanner sc = new Scanner(System.in);
         String hypothese = sc.nextLine();
         UV currentUV = eleve.getCurrentUV();
@@ -32,6 +33,7 @@ public class Problemes {
         if (hypothese.equals(solution)) {
             System.out.println("Bravo, vous avez résolu le problème !");
             eleve.incrementerScore();
+            eleve.afficherScore();
             nouveauProbleme();
             return true;
         } else {
@@ -66,5 +68,100 @@ public class Problemes {
             uvManager.retirerUV(currentUV);
             uvManager.selectionnerProbleme(uvManager.selectionnerUV(eleve));
         }
+    }
+
+    public void interroger(){
+
+        if (eleve.getCurrentUV().getName().equals("PC20")){
+            System.out.println("Veuillez rentrer une hypothese:");
+            Scanner sc = new Scanner(System.in);
+            String hypothese = sc.nextLine().trim();
+
+            while (!isValidGuess(hypothese)){
+                System.out.println("Entrée non valide, veuillez rentrer une chaine de 4 chiffres:");
+                hypothese = sc.nextLine();
+            }
+
+            giveFeedbackMasterMind(hypothese);
+        }
+
+        if (eleve.getCurrentUV().getName().equals("MT3F")){
+            UV currentUV = eleve.getCurrentUV();
+            String solution = currentUV.getListeProblemes().get(enonce);
+            if (solution.equals("-143")){
+                System.out.println("\nLe déterminant d'une matrice 3×3 se calcule en multipliant les éléments de la première ligne \n" +
+                        "par les déterminants des matrices 2×2 restantes, en alternant les signes. \n" +
+                        "Il s'agit de prendre chaque élément de la première ligne, \n" +
+                        "multiplier par le déterminant de la sous-matrice 2×2 correspondante, \n" +
+                        "et additionner ou soustraire ces produits en fonction de leur position (alternance des signes).\n");
+
+                System.out.print("Veuillez rentrer une hypothese :");
+                Scanner sc = new Scanner(System.in);
+                String hypothese = sc.nextLine();
+
+                if (hypothese.matches("\\d+")){
+                    System.out.println("Le nombre à trouver est négatif.\n");
+                }
+                else if (!hypothese.matches("\\d{3}")){
+                    System.out.println("Le nombre à trouver est composé de 3 chiffres.\n");
+                }
+            }
+            else if (solution.equals("1/2*ln(x^2+1)+c")){
+                System.out.println("\nPour résoudre cette intégrale, il faut effectuer un changement de variable.\n" +
+                        "On pose u = x^2 + 1, donc du = 2x dx.\n");
+
+                System.out.print("Veuillez rentrer une hypothèse : ");
+                Scanner sc = new Scanner(System.in);
+                String hypothese = sc.nextLine();
+
+                if (hypothese.matches("1/2*ln(x^2+1)")){
+                    System.out.println("N'oublie pas la constante.\n");
+                }
+                else if (hypothese.matches("ln(x^2+1)+c")){
+                    System.out.println("N'oubliez pas le facteur devant le ln.\n");
+                }
+                else {
+                    System.out.println("Pense a bien relire les aides données.\n");
+                }
+            }
+        }
+    }
+
+    private static boolean isValidGuess(String guess) {
+        return guess.matches("\\d{4}"); // Vérifie que la chaîne est composée de 4 chiffres
+    }
+
+    private void giveFeedbackMasterMind(String hypothese) {
+        UV currentUV = eleve.getCurrentUV();
+        String solution = currentUV.getListeProblemes().get(enonce);
+        int bulls = 0; // Bons chiffres à la bonne position
+        int cows = 0; // Bons chiffres à la mauvaise position
+
+        boolean[] solutionUsed = new boolean[4];
+        boolean[] guessUsed = new boolean[4];
+
+        // Étape 1 : Compter les "bulls"
+        for (int i = 0; i < 4; i++) {
+            if (hypothese.charAt(i) == solution.charAt(i)) {
+                bulls++;
+                solutionUsed[i] = true;
+                guessUsed[i] = true;
+            }
+        }
+
+        // Étape 2 : Compter les "cows"
+        for (int i = 0; i < 4; i++) {
+            if (guessUsed[i]) continue; // Ignorer les "bulls"
+            for (int j = 0; j < 4; j++) {
+                if (solutionUsed[j]) continue; // Ignorer les chiffres déjà utilisés
+                if (hypothese.charAt(i) == solution.charAt(j)) {
+                    cows++;
+                    solutionUsed[j] = true;
+                    break;
+                }
+            }
+        }
+
+        System.out.println("Bons chiffres à la bonne position: "+ bulls + "\nBons chiffres à la mauvaise position: " + cows); // Retourne le feedback (xB = bulls, xW = cows)
     }
 }
