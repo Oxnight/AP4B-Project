@@ -5,17 +5,17 @@ public class Main {
         UVManager uvManager = new UVManager();
         UV mt3f = new UV("MT3F", "Cyril Godey le GOAT");
         uvManager.ajouterUV(mt3f);
-        mt3f.ajouterProbleme("1 + 1 ?", "2");
-        mt3f.ajouterProbleme("2 + 2 ?", "4");
-        mt3f.ajouterProbleme("3 + 3 ?", "6");
-        mt3f.ajouterProbleme("4 + 4 ?", "8");
 
-        UV sq20 = new UV("SQ20", "Cyril Godey toujours le GOAT");
-        uvManager.ajouterUV(sq20);
-        sq20.ajouterProbleme("1 + 1 ?", "2");
-        sq20.ajouterProbleme("2 + 2 ?", "4");
-        sq20.ajouterProbleme("3 + 3 ?", "6");
-        sq20.ajouterProbleme("4 + 4 ?", "8");
+        mt3f.ajouterProbleme(Arrays.deepToString(new int[][]{{9, 7, 5}, {3, 6, 8}, {2, 4, 1}}), "-143");
+        mt3f.ajouterProbleme("I = ∫ 𝒙 ∕ (𝒙^2+1) 𝑑𝒙", "1/2*ln(x^2+1)+c");
+        mt3f.ajouterProbleme("P = ∏ avec 𝒏 allant de 1 à 30 de (1 + 1/(2𝒏-1)) arrondi à 2 décimales au supérieur", "9,75");
+
+        UV pc20 = new UV("PC20", "On fait du MasterMind ici, vient c'est cool");
+        uvManager.ajouterUV(pc20);
+        pc20.ajouterProbleme("Mastermind n°1", "0427");
+        pc20.ajouterProbleme("Mastermind n°2", "4629");
+        pc20.ajouterProbleme("Mastermind n°3", "6623");
+        pc20.ajouterProbleme("Mastermind n°4", "5193");
 
         Eleve oui = new Eleve(uvManager);
         oui.identification();
@@ -40,7 +40,7 @@ public class Main {
 
             switch (choix) {
                 case 1:
-                    // Logic for getting hints (not implemented)
+                    probleme.interroger();
                     break;
                 case 2:
                     probleme.effectuerHypothese();
