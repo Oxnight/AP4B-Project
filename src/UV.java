@@ -15,6 +15,10 @@ public class UV {
         return this.name;
     }
 
+    public String getDescription(){
+        return this.description;
+    }
+
     public Map<String, String> getListeProblemes() {
         return listeProblemes;
     }
@@ -23,4 +27,3 @@ public class UV {
         listeProblemes.put(enonce, solution);
     }
 }
-
