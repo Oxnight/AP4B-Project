@@ -1,11 +1,22 @@
 import java.util.*;
+import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
+
         UVManager uvManager = new UVManager();
+        Eleve oui = new Eleve(uvManager);
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new GUI(uvManager, oui);
+            }
+        });
+
+
         UV mt3f = new UV("MT3F", "Cyril Godey le GOAT");
         uvManager.ajouterUV(mt3f);
-
         mt3f.ajouterProbleme(Arrays.deepToString(new int[][]{{9, 7, 5}, {3, 6, 8}, {2, 4, 1}}), "-143");
         mt3f.ajouterProbleme("I = ∫ 𝒙 ∕ (𝒙^2+1) 𝑑𝒙", "1/2*ln(x^2+1)+c");
         mt3f.ajouterProbleme("P = ∏ avec 𝒏 allant de 1 à 30 de (1 + 1/(2𝒏-1)) arrondi à 2 décimales au supérieur", "9,75");
@@ -17,7 +28,6 @@ public class Main {
         pc20.ajouterProbleme("Mastermind n°3", "6623");
         pc20.ajouterProbleme("Mastermind n°4", "5193");
 
-        Eleve oui = new Eleve(uvManager);
         oui.identification();
         uvManager.selectionnerUV(oui);
 
