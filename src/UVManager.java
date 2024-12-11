@@ -67,4 +67,8 @@ public class UVManager {
     public void retirerUV(UV uv) {
         listeUV.remove(uv);
     }
+
+    public List<UV> getListeUV() {
+        return listeUV;
+    }
 }
