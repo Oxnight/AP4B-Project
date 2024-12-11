@@ -35,6 +35,10 @@ public class Eleve {
         return nombreUVvalidees;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public void incrementerNombreUVValidees() {
         this.nombreUVvalidees += 1;
     }
