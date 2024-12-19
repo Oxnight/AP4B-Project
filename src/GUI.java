@@ -85,6 +85,15 @@ public class GUI {
         });
         centerPanel.add(submitButton, gbc);
 
+        // Ajout de l'ActionListener pour la touche Entrée
+        nameField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                submitButton.doClick();
+            }
+        });
+
+
         panel.add(centerPanel, BorderLayout.CENTER);
 
         panel.revalidate();
