@@ -27,13 +27,19 @@ public class Problemes {
         return this.tentativesRestantes;
     }
 
+    public enum ValidationStatus {
+        SUCCESS,
+        NO_MORE_TRIES,
+        ECHEC
+    }
+
     public void demanderHypothese(){
         Scanner sc = new Scanner(System.in);
         String hypothese = sc.nextLine();
         effectuerHypothese(hypothese);
     }
 
-    public boolean effectuerHypothese(String hypothese) {
+    public ValidationStatus effectuerHypothese(String hypothese) {
         System.out.println("Veuillez entrer votre hypothèse : ");
         System.out.println("Le problème est : " + enonce);
         UV currentUV = eleve.getCurrentUV();
@@ -43,16 +49,17 @@ public class Problemes {
             eleve.incrementerScore();
             eleve.afficherScore();
             nouveauProbleme();
-            return true;
+            return ValidationStatus.SUCCESS;
         } else {
             tentativesRestantes -= 1;
             if (tentativesRestantes == 0) {
                 System.out.println("Echec ! Vous avez épuisé toutes vos tentatives.");
                 nouveauProbleme();
+                return ValidationStatus.NO_MORE_TRIES;
             } else {
                 System.out.println("\nIncorrect. Il vous reste " + tentativesRestantes + " tentatives.");
+                return ValidationStatus.ECHEC;
             }
-            return false;
         }
     }
 
