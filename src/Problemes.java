@@ -12,7 +12,11 @@ public class Problemes {
     }
 
     public String getEnonce() {
-        return this.enonce;
+        UV currentUV = eleve.getCurrentUV();
+        if (currentUV != null) {
+            enonce = uvManager.selectionnerProbleme(currentUV);
+        }
+        return enonce;
     }
 
     public void setEnonce(String enonce) {
@@ -23,15 +27,19 @@ public class Problemes {
         return this.tentativesRestantes;
     }
 
-    public boolean effectuerHypothese() {
-        System.out.println("Veuillez entrer votre hypothèse : ");
-        System.out.println("Le problème est : " + enonce);
+    public void demanderHypothese(){
         Scanner sc = new Scanner(System.in);
         String hypothese = sc.nextLine();
+        effectuerHypothese(hypothese);
+    }
+
+    public boolean effectuerHypothese(String hypothese) {
+        System.out.println("Veuillez entrer votre hypothèse : ");
+        System.out.println("Le problème est : " + enonce);
         UV currentUV = eleve.getCurrentUV();
         String solution = currentUV.getListeProblemes().get(enonce);
         if (hypothese.equals(solution)) {
-            System.out.println("Bravo, vous avez résolu le problème !");
+            System.out.println("\nBravo, vous avez résolu le problème !");
             eleve.incrementerScore();
             eleve.afficherScore();
             nouveauProbleme();
@@ -42,7 +50,7 @@ public class Problemes {
                 System.out.println("Echec ! Vous avez épuisé toutes vos tentatives.");
                 nouveauProbleme();
             } else {
-                System.out.println("Incorrect. Il vous reste " + tentativesRestantes + " tentatives.");
+                System.out.println("\nIncorrect. Il vous reste " + tentativesRestantes + " tentatives.");
             }
             return false;
         }
@@ -91,7 +99,7 @@ public class Problemes {
                     "multiplier par le déterminant de la sous-matrice 2×2 correspondante, \n" +
                     "et additionner ou soustraire ces produits en fonction de leur position (alternance des signes).\n");
 
-            System.out.print("Veuillez rentrer une hypothese :");
+            System.out.print("Veuillez rentrer une hypothese : ");
             Scanner sc = new Scanner(System.in);
             String hypothese = sc.nextLine();
 
@@ -117,8 +125,8 @@ public class Problemes {
             } else {
                 System.out.println("Pense à bien relire les aides données.\n");
             }
-        } else if (solution.equals("9,75")) {
-            System.out.println("\nPour résoudre ce produit infini, il faut le développer.\n" +
+        } else if (solution.equals("9.75")) {
+            System.out.println("\nPour résoudre ce produit, il faut le développer.\n" +
                     "On peut remarquer que le terme général est de la forme 1 + 1/(2n-1).\n" +
                     "Il faut donc développer ce produit jusqu'à n=30 et arrondir à 2 décimales supérieures.\n");
 
@@ -128,13 +136,34 @@ public class Problemes {
 
             if (!hypothese.matches("^\\d+(\\.\\d{2})?$")) {
                 System.out.println("L'hypothèse doit être un nombre à deux décimales.\n");
-            } else if (hypothese.matches("^9\\,7[0-9]$")) {
+            } else if (hypothese.matches("^9\\.7[0-9]$")) {
                 char secondDecimal = hypothese.charAt(3);
                 if (secondDecimal != '5') {
                     System.out.println("L'arrondi n'est pas correct.\n");
                 }
-            } else if (hypothese.matches("^\\d\\,[0-9]+$")) {
-                System.out.println("L'unité doit être un seul chiffre avant la virgule.");
+            } else if (!hypothese.matches("^\\d\\.[0-9]+$")) {
+                System.out.println("L'unité doit avoir un seul chiffre avant la virgule.\n");
+            } else {
+                System.out.println("Pensez à bien relire les aides données.\n");
+            }
+        } else if (solution.equals("105.19")){
+            System.out.println("\nPour résoudre cette somme, on peut la séparer en deux parties : \n" +
+                    "la somme de 1 à 100 de 1 et la somme de 1 à 100 de 1/n.\n" +
+                    "La première somme est évidente, la deuxième est une série harmonique.\n");
+
+            System.out.print("Veuillez rentrer une hypothèse : ");
+            Scanner sc = new Scanner(System.in);
+            String hypothese = sc.nextLine();
+
+            if (!hypothese.matches("^\\d+(\\.\\d{2})?$")) {
+                System.out.println("L'hypothèse doit être un nombre à deux décimales.\n");
+            } else if (hypothese.matches("^9\\.7[0-9]$")) {
+                char secondDecimal = hypothese.charAt(5);
+                if (secondDecimal != '9') {
+                    System.out.println("L'arrondi n'est pas correct.\n");
+                }
+            } else if (!hypothese.matches("^\\d{3}\\.[0-9]+$")) {
+                System.out.println("L'unité doit avoir trois chiffres avant la virgule.\n");
             } else {
                 System.out.println("Pensez à bien relire les aides données.\n");
             }
