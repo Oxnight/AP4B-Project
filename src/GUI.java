@@ -155,7 +155,18 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 String hypothese = JOptionPane.showInputDialog(frame, "Entrez votre hypothèse :");
                 if (hypothese != null && !hypothese.trim().isEmpty()) {
-                    probleme.effectuerHypothese(hypothese);
+                    Problemes.ValidationStatus status = probleme.effectuerHypothese(hypothese);
+                    if(status == Problemes.ValidationStatus.SUCCESS){
+                        JOptionPane.showMessageDialog(frame, "Bravo, vous avez résolu le problème !");
+                        displayProblemWithOptions();
+                    }else{
+                        if (status == Problemes.ValidationStatus.NO_MORE_TRIES) {
+                            JOptionPane.showMessageDialog(frame, "Echec ! Vous avez épuisé toutes vos tentatives.");
+                            displayProblemWithOptions();
+                        }else if (status == Problemes.ValidationStatus.ECHEC){
+                            JOptionPane.showMessageDialog(frame, "Echec ! Il vous reste " + probleme.getTentativesRestantes() + " tentatives.");
+                        }
+                    }
                     outputArea.append("Hypothèse proposée : " + hypothese + "\n");
                 }
             }
