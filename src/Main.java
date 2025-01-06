@@ -1,18 +1,10 @@
 import java.util.*;
-import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
 
         UVManager uvManager = new UVManager();
         Eleve oui = new Eleve(uvManager);
-
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new GUI(uvManager, oui);
-            }
-        });
 
         UV mt3f = new UV("MT3F", "Cyril Godey le GOAT");
         uvManager.ajouterUV(mt3f);
@@ -32,7 +24,6 @@ public class Main {
         uvManager.selectionnerUV(oui);
 
         String enonce = uvManager.selectionnerProbleme(oui.getCurrentUV());
-
         Problemes probleme = new Problemes(uvManager, oui);
         probleme.setEnonce(enonce);
 
@@ -50,7 +41,7 @@ public class Main {
 
             switch (choix) {
                 case 1:
-                    probleme.interroger();
+                    probleme.demanderIndice();
                     break;
                 case 2:
                     probleme.demanderHypothese();
@@ -59,7 +50,7 @@ public class Main {
                     continuer = false;
                     break;
                 default:
-                    System.out.println("Choix invalide. Veuillez réessayer.");
+                    System.out.println("\nChoix invalide. Veuillez réessayer.");
             }
         }
 

@@ -32,6 +32,7 @@ public class UVManager {
                 else {
                     System.out.println("Convoqué devant le 2ème jury de suivi. Très mauvais semestre. Risque de réorientation. Maintien à l'UTBM selon vos résultats. Prenez vos précautions en vue d'une réorientation, inscrivez vous sur ParcourSup.");
                 }
+                System.exit(0);
             }
             System.out.println("\nVoici la liste des UV disponibles :");
             for (UV uv : listeUV) {

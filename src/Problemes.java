@@ -34,27 +34,29 @@ public class Problemes {
     }
 
     public void demanderHypothese(){
+        System.out.println("\nVeuillez entrer votre hypothèse : ");
+        System.out.println("Le problème est : " + enonce);
+        System.out.println("La solution est : " + eleve.getCurrentUV().getListeProblemes().get(enonce));
         Scanner sc = new Scanner(System.in);
         String hypothese = sc.nextLine();
-        effectuerHypothese(hypothese);
+        effectuerHypothese(hypothese, false);
     }
 
-    public ValidationStatus effectuerHypothese(String hypothese) {
-        System.out.println("Veuillez entrer votre hypothèse : ");
-        System.out.println("Le problème est : " + enonce);
+    public ValidationStatus effectuerHypothese(String hypothese, boolean isGUI) {
         UV currentUV = eleve.getCurrentUV();
         String solution = currentUV.getListeProblemes().get(enonce);
         if (hypothese.equals(solution)) {
             System.out.println("\nBravo, vous avez résolu le problème !");
             eleve.incrementerScore();
             eleve.afficherScore();
-            nouveauProbleme();
+            nouveauProbleme(isGUI);
             return ValidationStatus.SUCCESS;
         } else {
             tentativesRestantes -= 1;
             if (tentativesRestantes == 0) {
                 System.out.println("Echec ! Vous avez épuisé toutes vos tentatives.");
-                nouveauProbleme();
+                eleve.afficherScore();
+                nouveauProbleme(isGUI);
                 return ValidationStatus.NO_MORE_TRIES;
             } else {
                 System.out.println("\nIncorrect. Il vous reste " + tentativesRestantes + " tentatives.");
@@ -63,7 +65,7 @@ public class Problemes {
         }
     }
 
-    public void nouveauProbleme() {
+    public void nouveauProbleme(boolean isGUI) {
         UV currentUV = eleve.getCurrentUV();
         if (this.enonce != null){
             currentUV.getListeProblemes().remove(this.enonce);
@@ -81,114 +83,145 @@ public class Problemes {
                 System.out.println("Vous n'avez pas validé l'UV.");
             }
             uvManager.retirerUV(currentUV);
-            uvManager.selectionnerProbleme(uvManager.selectionnerUV(eleve));
+            eleve.resetScore();
+            if (!isGUI){
+                this.setEnonce(uvManager.selectionnerProbleme(uvManager.selectionnerUV(eleve)));
+            }
         }
     }
 
-    public void interroger() {
+    public void demanderIndice(){
+        System.out.println("\nVeuillez entrer une hypothèse : ");
+        System.out.println("Le problème est : " + enonce);
+        System.out.println("La solution est : " + eleve.getCurrentUV().getListeProblemes().get(enonce));
+        Scanner sc = new Scanner(System.in);
+        String hypothese = sc.nextLine();
+
+        if(eleve.getCurrentUV().getName().equals("PC20")){
+            while (!isValidGuess(hypothese)) {
+                System.out.println("Entrée non valide, veuillez rentrer une chaine de 4 chiffres:");
+                hypothese = sc.nextLine();
+            }
+        }
+
+        interroger(hypothese);
+    }
+
+    public String interroger(String hypothese) {
         if (eleve.getCurrentUV().getName().equals("PC20")) {
-            giveFeedbackMasterMind();
+            return giveFeedbackMasterMind(hypothese);
         }
 
         if (eleve.getCurrentUV().getName().equals("MT3F")) {
-            giveFeedbackMT3F();
+            return giveFeedbackMT3F(hypothese);
         }
+        return null;
     }
 
-    public void giveFeedbackMT3F() {
+    public String giveFeedbackMT3F(String hypothese) {
         UV currentUV = eleve.getCurrentUV();
         String solution = currentUV.getListeProblemes().get(enonce);
 
         if (solution.equals("-143")) {
-            System.out.println("\nLe déterminant d'une matrice 3×3 se calcule en multipliant les éléments de la première ligne \n" +
+            String indice1 = "\nLe déterminant d'une matrice 3×3 se calcule en multipliant les éléments de la première ligne \n" +
                     "par les déterminants des matrices 2×2 restantes, en alternant les signes. \n" +
                     "Il s'agit de prendre chaque élément de la première ligne, \n" +
                     "multiplier par le déterminant de la sous-matrice 2×2 correspondante, \n" +
-                    "et additionner ou soustraire ces produits en fonction de leur position (alternance des signes).\n");
-
-            System.out.print("Veuillez rentrer une hypothese : ");
-            Scanner sc = new Scanner(System.in);
-            String hypothese = sc.nextLine();
+                    "et additionner ou soustraire ces produits en fonction de leur position (alternance des signes).\n";
+            System.out.println(indice1);
 
             if (hypothese.matches("\\d+")) {
-                System.out.println("Le nombre à trouver est négatif.\n");
+                String indice2 = "Le nombre à trouver est négatif.\n";
+                System.out.println(indice2);
+                return indice2 + "\n" + indice1;
             } else if (!hypothese.matches("\\d{3}")) {
-                System.out.println("Le nombre à trouver est composé de 3 chiffres.\n");
+                String indice3 = "Le nombre à trouver est composé de 3 chiffres.\n";
+                System.out.println(indice3);
+                return indice3 + "\n" + indice1;
             } else {
-                System.out.println("Pense à bien relire les aides données.\n");
+                String indice4 = "Pensez à bien relire les aides données.\n";
+                System.out.println(indice4);
+                return indice4 + "\n" + indice1;
             }
         } else if (solution.equals("1/2*ln(x^2+1)+c")) {
-            System.out.println("\nPour résoudre cette intégrale, il faut effectuer un changement de variable.\n" +
-                    "On pose u = x^2 + 1, donc du = 2x dx.\n");
-
-            System.out.print("Veuillez rentrer une hypothèse : ");
-            Scanner sc = new Scanner(System.in);
-            String hypothese = sc.nextLine();
+            String indice1 = "\nPour résoudre cette intégrale, il faut effectuer un changement de variable.\n" +
+                    "On pose u = x^2 + 1, donc du = 2x dx.\n";
+            System.out.println(indice1);
 
             if (hypothese.matches("1/2*ln(x^2+1)")) {
-                System.out.println("N'oublie pas la constante.\n");
+                String indice2 = "N'oubliez pas la constante.\n";
+                System.out.println(indice2);
+                return indice2 + "\n" + indice1;
             } else if (hypothese.matches("ln(x^2+1)+c")) {
-                System.out.println("N'oubliez pas le facteur devant le ln.\n");
+                String indice3 = "N'oubliez pas le facteur devant le ln.\n";
+                System.out.println(indice3);
+                return indice3 + "\n" + indice1;
             } else {
-                System.out.println("Pense à bien relire les aides données.\n");
+                String indice4 = "Pensez à bien relire les aides données.\n";
+                System.out.println(indice4);
+                return indice4 + "\n" + indice1;
             }
         } else if (solution.equals("9.75")) {
-            System.out.println("\nPour résoudre ce produit, il faut le développer.\n" +
+            String indice1 = "\nPour résoudre ce produit, il faut le développer.\n" +
                     "On peut remarquer que le terme général est de la forme 1 + 1/(2n-1).\n" +
-                    "Il faut donc développer ce produit jusqu'à n=30 et arrondir à 2 décimales supérieures.\n");
-
-            System.out.print("Veuillez rentrer une hypothèse : ");
-            Scanner sc = new Scanner(System.in);
-            String hypothese = sc.nextLine();
+                    "Il faut donc développer ce produit jusqu'à n=30 et arrondir à 2 décimales supérieures.\n";
+            System.out.println(indice1);
 
             if (!hypothese.matches("^\\d+(\\.\\d{2})?$")) {
-                System.out.println("L'hypothèse doit être un nombre à deux décimales.\n");
+                String indice2 = "L'hypothèse doit être un nombre à deux décimales.\n";
+                System.out.println(indice2);
+                return indice2 + "\n" + indice1;
             } else if (hypothese.matches("^9\\.7[0-9]$")) {
                 char secondDecimal = hypothese.charAt(3);
                 if (secondDecimal != '5') {
-                    System.out.println("L'arrondi n'est pas correct.\n");
+                    String indice3 = "L'arrondi n'est pas correct.\n";
+                    System.out.println(indice3);
+                    return indice3 + "\n" + indice1;
                 }
             } else if (!hypothese.matches("^\\d\\.[0-9]+$")) {
-                System.out.println("L'unité doit avoir un seul chiffre avant la virgule.\n");
+                String indice4 = "L'unité doit avoir un seul chiffre avant la virgule.\n";
+                System.out.println(indice4);
+                return indice4 + "\n" + indice1;
             } else {
-                System.out.println("Pensez à bien relire les aides données.\n");
+                String indice5 = "Pensez à bien relire les aides données.\n";
+                System.out.println(indice5);
+                return indice5 + "\n" + indice1;
             }
-        } else if (solution.equals("105.19")){
-            System.out.println("\nPour résoudre cette somme, on peut la séparer en deux parties : \n" +
+        } else if (solution.equals("105.19")) {
+            String indice1 = "\nPour résoudre cette somme, on peut la séparer en deux parties : \n" +
                     "la somme de 1 à 100 de 1 et la somme de 1 à 100 de 1/n.\n" +
-                    "La première somme est évidente, la deuxième est une série harmonique.\n");
-
-            System.out.print("Veuillez rentrer une hypothèse : ");
-            Scanner sc = new Scanner(System.in);
-            String hypothese = sc.nextLine();
+                    "La première somme est évidente, la deuxième est une série harmonique.\n";
+            System.out.println(indice1);
 
             if (!hypothese.matches("^\\d+(\\.\\d{2})?$")) {
-                System.out.println("L'hypothèse doit être un nombre à deux décimales.\n");
-            } else if (hypothese.matches("^9\\.7[0-9]$")) {
+                String indice2 = "L'hypothèse doit être un nombre à deux décimales.\n";
+                System.out.println(indice2);
+                return indice2 + "\n" + indice1;
+            } else if (hypothese.matches("^105\\.1[0-9]$")) {
                 char secondDecimal = hypothese.charAt(5);
                 if (secondDecimal != '9') {
-                    System.out.println("L'arrondi n'est pas correct.\n");
+                    String indice3 = "L'arrondi n'est pas correct.\n";
+                    System.out.println(indice3);
+                    return indice3 + "\n" + indice1;
                 }
             } else if (!hypothese.matches("^\\d{3}\\.[0-9]+$")) {
-                System.out.println("L'unité doit avoir trois chiffres avant la virgule.\n");
+                String indice4 = "L'unité doit avoir trois chiffres avant la virgule.\n";
+                System.out.println(indice4);
+                return indice4 + "\n" + indice1;
             } else {
-                System.out.println("Pensez à bien relire les aides données.\n");
+                String indice5 = "Pensez à bien relire les aides données.\n";
+                System.out.println(indice5);
+                return indice5 + "\n" + indice1;
             }
         }
+        return null;
     }
 
     public static boolean isValidGuess(String guess) {
         return guess.matches("\\d{4}"); // Vérifie que la chaîne est composée de 4 chiffres
     }
 
-    public void giveFeedbackMasterMind() {
-        System.out.println("Veuillez rentrer une hypothese:");
-        Scanner sc = new Scanner(System.in);
-        String hypothese = sc.nextLine().trim();
-        while (!isValidGuess(hypothese)) {
-            System.out.println("Entrée non valide, veuillez rentrer une chaine de 4 chiffres:");
-            hypothese = sc.nextLine();
-        }
+    public String giveFeedbackMasterMind(String hypothese) {
 
         UV currentUV = eleve.getCurrentUV();
         String solution = currentUV.getListeProblemes().get(enonce);
@@ -220,6 +253,8 @@ public class Problemes {
             }
         }
 
-        System.out.println("Bons chiffres à la bonne position: "+ bulls + "\nBons chiffres à la mauvaise position: " + cows); // Retourne le feedback (xB = bulls, xW = cows)
+        String indice = "Bons chiffres à la bonne position: "+ bulls + "\nBons chiffres à la mauvaise position: " + cows;
+        System.out.println(indice); // Retourne le feedback (xB = bulls, xW = cows)
+        return indice;
     }
 }

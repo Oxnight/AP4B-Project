@@ -31,6 +31,10 @@ public class Eleve {
         return score;
     }
 
+    public int resetScore(){
+        return score = 0;
+    }
+
     public int getNombreUVvalidees() {
         return nombreUVvalidees;
     }

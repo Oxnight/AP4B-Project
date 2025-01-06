@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 public class GUI {
     private UVManager uvManager;
     private Eleve eleve;
+    private UV uv;
     private Problemes probleme;
     private JTextArea outputArea;
     private JTextField inputField;
@@ -114,7 +115,6 @@ public class GUI {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     eleve.setCurrentUV(uv);
-                    System.out.println("UV sélectionnée : " + uv.getName());
                     displayProblemWithOptions();
                 }
             });
@@ -129,6 +129,8 @@ public class GUI {
     private void displayProblemWithOptions() {
         panel.removeAll();
         panel.setLayout(new BorderLayout());
+
+        System.out.println("Voici les problemes restants : " + eleve.getCurrentUV().getListeProblemes());
 
         // Récupération et affichage de l'énoncé du problème
         String enonce = probleme.getEnonce();
@@ -150,8 +152,17 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String indice = JOptionPane.showInputDialog(frame, "Entrez votre hypothèse :");
+
+                if (eleve.getCurrentUV().getName().equals("PC20")) {
+                    while (indice != null && !indice.matches("\\d{4}")) {
+                        JOptionPane.showMessageDialog(frame, "L'hypothèse doit être composée de 4 chiffres. Veuillez réessayer.");
+                        indice = JOptionPane.showInputDialog(frame, "Entrez votre hypothèse :");
+                    }
+                }
+
                 if (indice != null && !indice.trim().isEmpty()) {
-                    probleme.interroger();
+
+                    JOptionPane.showMessageDialog(frame, "Indice : \n" + probleme.interroger(indice));
                     outputArea.append("Indice demandé.\n");
                 }
             }
@@ -163,16 +174,54 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String hypothese = JOptionPane.showInputDialog(frame, "Entrez votre hypothèse :");
+
+                if (eleve.getCurrentUV().getName().equals("PC20")) {
+                    while (hypothese != null && !hypothese.matches("\\d{4}")) {
+                        JOptionPane.showMessageDialog(frame, "L'hypothèse doit être composée de 4 chiffres. Veuillez réessayer.");
+                        hypothese = JOptionPane.showInputDialog(frame, "Entrez votre hypothèse :");
+                    }
+                }
+
                 if (hypothese != null && !hypothese.trim().isEmpty()) {
-                    Problemes.ValidationStatus status = probleme.effectuerHypothese(hypothese);
-                    if(status == Problemes.ValidationStatus.SUCCESS){
+                    Problemes.ValidationStatus status = probleme.effectuerHypothese(hypothese, true);
+                    if (status == Problemes.ValidationStatus.SUCCESS){
                         JOptionPane.showMessageDialog(frame, "Bravo, vous avez résolu le problème !");
-                        displayProblemWithOptions();
-                    }else{
+                        if (uvManager.getListeUV().isEmpty()) {
+                            JOptionPane.showMessageDialog(frame, "Bravo, vous avez fini le TC ! Vous saurez d'ici peu si vous passez en branche.");
+                            if (eleve.getNombreUVvalidees() >= 2) {
+                                JOptionPane.showMessageDialog(frame, "Vous avez l'autorisation de partir en FISE INFORMATIQUE!");
+                            } else {
+                                JOptionPane.showMessageDialog(frame, "Convoqué devant le 2ème jury de suivi. Très mauvais semestre. Risque de réorientation. Maintien à l'UTBM selon vos résultats. Prenez vos précautions en vue d'une réorientation, inscrivez vous sur ParcourSup.");
+                            }
+                            frame.dispose();
+                            System.exit(0);
+                        } else if (eleve.getCurrentUV().getListeProblemes().isEmpty()){
+                            System.out.println("GG");
+                            JOptionPane.showMessageDialog(frame, "Tous les problèmes de cette UV ont été résolus.");
+                            askForUVSelection();
+                        } else {
+                            displayProblemWithOptions();
+                        }
+                    } else {
                         if (status == Problemes.ValidationStatus.NO_MORE_TRIES) {
                             JOptionPane.showMessageDialog(frame, "Echec ! Vous avez épuisé toutes vos tentatives.");
-                            displayProblemWithOptions();
-                        }else if (status == Problemes.ValidationStatus.ECHEC){
+                            if (uvManager.getListeUV().isEmpty()) {
+                                JOptionPane.showMessageDialog(frame, "Bravo, vous avez fini le TC ! Vous saurez d'ici peu si vous passez en branche.");
+                                if (eleve.getNombreUVvalidees() >= 2) {
+                                    JOptionPane.showMessageDialog(frame, "Vous avez l'autorisation de partir en FISE INFORMATIQUE!");
+                                } else {
+                                    JOptionPane.showMessageDialog(frame, "Convoqué devant le 2ème jury de suivi. Très mauvais semestre. Risque de réorientation. Maintien à l'UTBM selon vos résultats. Prenez vos précautions en vue d'une réorientation, inscrivez vous sur ParcourSup.");
+                                }
+                                frame.dispose();
+                                System.exit(0);
+                            } else if (eleve.getCurrentUV().getListeProblemes().isEmpty()){
+                                System.out.println("GG");
+                                JOptionPane.showMessageDialog(frame, "Tous les problèmes de cette UV ont été résolus.");
+                                askForUVSelection();
+                            } else {
+                                displayProblemWithOptions();
+                            }
+                        } else if (status == Problemes.ValidationStatus.ECHEC){
                             JOptionPane.showMessageDialog(frame, "Echec ! Il vous reste " + probleme.getTentativesRestantes() + " tentatives.");
                         }
                     }
@@ -200,6 +249,5 @@ public class GUI {
 
     private void handleUserInput(String input) {
         // Logique pour gérer les entrées utilisateur
-        System.out.println("oui");
     }
 }
