@@ -200,5 +200,6 @@ public class GUI {
 
     private void handleUserInput(String input) {
         // Logique pour gérer les entrées utilisateur
+        System.out.println("oui");
     }
 }
