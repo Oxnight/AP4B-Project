@@ -3,74 +3,134 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Classe représentant l'interface graphique (GUI) permettant à l'élève d'interagir avec les problèmes d'UV.
+ * Elle gère la fenêtre principale, les boutons, et l'affichage des problèmes et des résultats.
+ */
 public class GUI {
-    private UVManager uvManager;
-    private Eleve eleve;
-    private UV uv;
-    private Problemes probleme;
-    private JTextArea outputArea;
-    private JTextField inputField;
-    private JFrame frame;
-    private JPanel panel;
+    private final UVManager uvManager;  // Le gestionnaire des UV.
+    private final Eleve eleve;  // L'élève qui interagit avec le programme.
+    private final Problemes probleme;  // L'objet représentant le problème en cours.
+    private JTextArea outputArea;  // Zone d'affichage des résultats et des messages.
+    private JTextField inputField;  // Champ de texte pour l'entrée de l'utilisateur.
+    private JFrame frame;  // Fenêtre principale de l'interface graphique.
+    private JPanel panel;  // Panneau contenant l'interface utilisateur.
+    private JLabel studentInfoLabel;  // Étiquette pour afficher les informations de l'élève.
 
+    /**
+     * Constructeur pour initialiser l'interface graphique et les objets nécessaires.
+     *
+     * @param uvManager Le gestionnaire des UV.
+     * @param eleve     L'élève interagissant avec le programme.
+     */
     public GUI(UVManager uvManager, Eleve eleve) {
         this.uvManager = uvManager;
         this.eleve = eleve;
-        this.probleme = new Problemes(uvManager, eleve);
-        initUI();
+        this.probleme = new Problemes(uvManager, eleve);  // Création d'un objet Problemes pour gérer les problèmes.
+        initUI();  // Initialisation de l'interface utilisateur.
     }
 
+    /**
+     * Méthode pour initialiser l'interface graphique (fenêtre, panneaux, boutons).
+     * C'est ici que l'on configure tous les composants graphiques de la fenêtre principale.
+     */
     private void initUI() {
+        // Initialisation de la fenêtre principale
         frame = new JFrame("Gestion des Problèmes");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 400);
+        frame.setSize(600, 400);  // Taille de la fenêtre
 
+        // Panneau principal qui contient tout le contenu
         panel = new JPanel(new BorderLayout());
-        frame.add(panel);
+        frame.add(panel, BorderLayout.CENTER);
 
+        // Zone de texte pour afficher les résultats
         outputArea = new JTextArea();
-        outputArea.setEditable(false);
+        outputArea.setEditable(false);  // Empêche l'édition par l'utilisateur
         panel.add(new JScrollPane(outputArea), BorderLayout.CENTER);
 
+        // Champ de texte pour l'entrée de l'utilisateur (ici on l'utilise pour l'identification)
         inputField = new JTextField();
         panel.add(inputField, BorderLayout.SOUTH);
 
+        // Lorsque l'utilisateur appuie sur "Entrée", le champ de texte est réinitialisé
         inputField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                handleUserInput(inputField.getText());
-                inputField.setText("");
+                inputField.setText("");  // Réinitialise le champ de texte après chaque entrée
             }
         });
 
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        // Panneau en bas pour afficher un bouton "Règle"
+        JPanel reglePanel = new JPanel(new BorderLayout());
+        JButton regleButton = new JButton("Règle");
+        regleButton.setPreferredSize(new Dimension(85, 40));  // Taille du bouton "Règle"
 
-        askForIdentification();
+        // Affiche les règles du jeu lorsqu'on clique sur le bouton "Règle"
+        regleButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String regleTexte = "Règles du jeu : \n" +
+                        "1. Vous devez résoudre les problèmes de chaque UV pour valider l'UV.\n" +
+                        "2. Vous pouvez demander des indices pour chaque problème.\n" +
+                        "3. Vous pouvez proposer une hypothèse pour chaque problème.\n" +
+                        "4. Vous avez 3 tentatives pour chaque problème.\n" +
+                        "5. Si vous échouez, vous ne validez pas l'UV.\n" +
+                        "6. Si vous passez tous les problèmes, vous pouvez passer à l'UV suivante.\n" +
+                        "7. Si vous validez toutes les UV, vous avez fini le TC (et passez en branche) !";
+                JOptionPane.showMessageDialog(frame, regleTexte);  // Affiche une boîte de dialogue avec les règles
+            }
+        });
+        reglePanel.add(regleButton, BorderLayout.EAST);
+
+        // Affichage des informations de l'élève dans l'interface
+        studentInfoLabel = new JLabel();
+        updateStudentInfo();  // Met à jour les informations de l'élève à l'initialisation
+        reglePanel.add(studentInfoLabel, BorderLayout.WEST);
+        studentInfoLabel.setVisible(false);  // L'étiquette est initialement cachée
+
+        frame.add(reglePanel, BorderLayout.SOUTH);  // Ajoute le panneau des règles et infos en bas
+
+        frame.setLocationRelativeTo(null);  // Centre la fenêtre
+        frame.setVisible(true);  // Rendre la fenêtre visible
+
+        askForIdentification();  // Demander à l'élève de s'identifier
     }
 
-    private void askForIdentification() {
-        panel.removeAll();
-        panel.setLayout(new BorderLayout());
+    /**
+     * Met à jour l'étiquette d'informations de l'élève.
+     */
+    private void updateStudentInfo() {
+        String info = String.format("Nom: %s | Tentatives restantes: %d | UV validées: %d",
+                eleve.getName(), probleme.getTentativesRestantes(), eleve.getNombreUVvalidees());
+        studentInfoLabel.setText(info);  // Affiche les informations de l'élève
+    }
 
+    /**
+     * Affiche une interface demandant à l'élève de s'identifier.
+     */
+    private void askForIdentification() {
+        panel.removeAll();  // Supprime tous les composants précédemment ajoutés
+        panel.setLayout(new BorderLayout());  // Nouveau layout pour la zone centrale
+
+        // Panneau central pour l'identification
         JPanel centerPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(10, 10, 10, 10);  // Espacement autour des composants
+        gbc.anchor = GridBagConstraints.CENTER;  // Centrer les composants
 
+        // Label pour demander l'identification
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 1;
         JLabel label = new JLabel("Veuillez vous identifier :");
         centerPanel.add(label, gbc);
 
+        // Champ de texte pour entrer le nom
         gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.WEST;
         JTextField nameField = new JTextField(20);
         centerPanel.add(nameField, gbc);
 
+        // Bouton pour soumettre l'identification
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 2;
@@ -80,79 +140,93 @@ public class GUI {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                eleve.setName(nameField.getText());
-                askForUVSelection();
+                String name = nameField.getText().trim();  // Récupère le nom entré
+                if (name.isEmpty()) {  // Si le nom est vide, affiche un message d'erreur
+                    JOptionPane.showMessageDialog(frame, "Le nom ne peut pas être vide. Veuillez entrer un nom.");
+                } else {
+                    eleve.setName(name);  // Définit le nom de l'élève
+                    updateStudentInfo();  // Met à jour les informations de l'élève
+                    askForUVSelection();  // Demande à l'élève de sélectionner une UV
+                }
             }
         });
-        centerPanel.add(submitButton, gbc);
+        centerPanel.add(submitButton, gbc);  // Ajoute le bouton au panneau
 
-        // Ajout de l'ActionListener pour la touche Entrée
+        // Permet de soumettre l'identification en appuyant sur "Entrée" après avoir entré le nom
         nameField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                submitButton.doClick();
+                submitButton.doClick();  // Simule un clic sur le bouton de soumission
             }
         });
 
-
+        // Ajout du panneau central au panneau principal
         panel.add(centerPanel, BorderLayout.CENTER);
 
-        panel.revalidate();
-        panel.repaint();
+        panel.revalidate();  // Réajuste les composants après modification
+        panel.repaint();  // Redessine les composants
     }
 
+    /**
+     * Affiche les UV disponibles pour que l'élève puisse en sélectionner une.
+     */
     private void askForUVSelection() {
-        panel.removeAll();
-        panel.setLayout(new GridLayout(uvManager.getListeUV().size() + 2, 1));
+        panel.removeAll();  // Supprime tous les composants précédents
+        studentInfoLabel.setVisible(true);  // Rendre l'étiquette des informations de l'élève visible
+        panel.setLayout(new GridLayout(uvManager.getListeUV().size() + 2, 1));  // Affiche une liste de boutons pour chaque UV
 
         JLabel label = new JLabel("Choisissez une UV :");
         panel.add(label);
 
-        // Boucle pour ajouter les boutons pour chaque UV
+        // Pour chaque UV, un bouton est créé
         for (UV uv : uvManager.getListeUV()) {
             JButton uvButton = new JButton(uv.getName());
             uvButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    eleve.setCurrentUV(uv);
-                    displayProblemWithOptions();
+                    eleve.setCurrentUV(uv);  // Définit l'UV actuelle de l'élève
+                    displayProblemWithOptions();  // Affiche le problème associé à cette UV
                 }
             });
-            panel.add(uvButton);
+            panel.add(uvButton);  // Ajoute le bouton de l'UV au panneau
         }
 
-        // Rafraîchissement de l'interface
         panel.revalidate();
         panel.repaint();
     }
 
+    /**
+     * Affiche un problème avec des options pour l'élève (demander un indice ou proposer une hypothèse).
+     */
     private void displayProblemWithOptions() {
-        panel.removeAll();
-        panel.setLayout(new BorderLayout());
+        panel.removeAll();  // Supprime tous les composants précédents
+        panel.setLayout(new BorderLayout());  // Nouveau layout avec une disposition en BorderLayout
 
-        System.out.println("Voici les problemes restants : " + eleve.getCurrentUV().getListeProblemes());
-
-        // Récupération et affichage de l'énoncé du problème
+        // Affiche l'énoncé du problème
         String enonce = probleme.getEnonce();
         if (enonce == null || enonce.isEmpty()) {
             enonce = "Aucun problème disponible pour cette UV.";
         }
 
-        // Affichage de l'énoncé du problème
         JLabel problemLabel = new JLabel(enonce);
         problemLabel.setHorizontalAlignment(SwingConstants.CENTER);
         problemLabel.setVerticalAlignment(SwingConstants.TOP);
+        problemLabel.setPreferredSize(new Dimension(100, 75));
+        problemLabel.setFont(new Font("", Font.PLAIN, 15));  // Taille et style de la police
+        problemLabel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));  // Marges autour de l'énoncé
         panel.add(problemLabel, BorderLayout.NORTH);
 
-        // Création des boutons pour les actions
+        // Panneau pour les boutons (demander un indice, proposer une hypothèse, quitter)
         JPanel buttonPanel = new JPanel(new GridLayout(3, 1));
 
+        // Bouton pour demander un indice
         JButton hintButton = new JButton("Demander un indice");
         hintButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String indice = JOptionPane.showInputDialog(frame, "Entrez votre hypothèse :");
 
+                // Si l'UV est "PC20", on s'assure que l'hypothèse a un format valide
                 if (eleve.getCurrentUV().getName().equals("PC20")) {
                     while (indice != null && !indice.matches("\\d{4}")) {
                         JOptionPane.showMessageDialog(frame, "L'hypothèse doit être composée de 4 chiffres. Veuillez réessayer.");
@@ -160,21 +234,23 @@ public class GUI {
                     }
                 }
 
+                // Affichage de l'indice si l'entrée n'est pas vide
                 if (indice != null && !indice.trim().isEmpty()) {
-
-                    JOptionPane.showMessageDialog(frame, "Indice : \n" + probleme.interroger(indice));
+                    JOptionPane.showMessageDialog(frame, "Votre hypothèse : " + indice + "\n\nIndice : \n" + probleme.interroger(indice, true));
                     outputArea.append("Indice demandé.\n");
                 }
             }
         });
-        buttonPanel.add(hintButton);
+        buttonPanel.add(hintButton);  // Ajoute le bouton "Demander un indice"
 
+        // Bouton pour proposer une hypothèse
         JButton guessButton = new JButton("Proposer une hypothèse");
         guessButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String hypothese = JOptionPane.showInputDialog(frame, "Entrez votre hypothèse :");
 
+                // Vérification pour l'UV "PC20" pour s'assurer que l'hypothèse est valide
                 if (eleve.getCurrentUV().getName().equals("PC20")) {
                     while (hypothese != null && !hypothese.matches("\\d{4}")) {
                         JOptionPane.showMessageDialog(frame, "L'hypothèse doit être composée de 4 chiffres. Veuillez réessayer.");
@@ -182,72 +258,66 @@ public class GUI {
                     }
                 }
 
+                // Si l'hypothèse n'est pas vide on l'évalue
                 if (hypothese != null && !hypothese.trim().isEmpty()) {
                     Problemes.ValidationStatus status = probleme.effectuerHypothese(hypothese, true);
-                    if (status == Problemes.ValidationStatus.SUCCESS){
+                    // Si la proposition est correcte, l'élève passe au problème suivant ou termine
+                    if (status == Problemes.ValidationStatus.SUCCESS) {
                         JOptionPane.showMessageDialog(frame, "Bravo, vous avez résolu le problème !");
                         if (uvManager.getListeUV().isEmpty()) {
-                            JOptionPane.showMessageDialog(frame, "Bravo, vous avez fini le TC ! Vous saurez d'ici peu si vous passez en branche.");
-                            if (eleve.getNombreUVvalidees() >= 2) {
+                            JOptionPane.showMessageDialog(frame, "Bravo, vous avez fini le TC !");
+                            // Si l'élève a validé au moins 2 UV, il peut passer en FISE INFORMATIQUE
+                            if (eleve.getNombreUVvalidees() >= 1) {
                                 JOptionPane.showMessageDialog(frame, "Vous avez l'autorisation de partir en FISE INFORMATIQUE!");
                             } else {
-                                JOptionPane.showMessageDialog(frame, "Convoqué devant le 2ème jury de suivi. Très mauvais semestre. Risque de réorientation. Maintien à l'UTBM selon vos résultats. Prenez vos précautions en vue d'une réorientation, inscrivez vous sur ParcourSup.");
+                                JOptionPane.showMessageDialog(frame, "Convoqué devant le 2ème jury de suivi. Très mauvais semestre. Risque de réorientation.");
                             }
                             frame.dispose();
                             System.exit(0);
-                        } else if (eleve.getCurrentUV().getListeProblemes().isEmpty()){
-                            System.out.println("GG");
-                            JOptionPane.showMessageDialog(frame, "Tous les problèmes de cette UV ont été résolus.");
-                            askForUVSelection();
                         } else {
-                            displayProblemWithOptions();
-                        }
-                    } else {
-                        if (status == Problemes.ValidationStatus.NO_MORE_TRIES) {
-                            JOptionPane.showMessageDialog(frame, "Echec ! Vous avez épuisé toutes vos tentatives.");
-                            if (uvManager.getListeUV().isEmpty()) {
-                                JOptionPane.showMessageDialog(frame, "Bravo, vous avez fini le TC ! Vous saurez d'ici peu si vous passez en branche.");
-                                if (eleve.getNombreUVvalidees() >= 2) {
-                                    JOptionPane.showMessageDialog(frame, "Vous avez l'autorisation de partir en FISE INFORMATIQUE!");
-                                } else {
-                                    JOptionPane.showMessageDialog(frame, "Convoqué devant le 2ème jury de suivi. Très mauvais semestre. Risque de réorientation. Maintien à l'UTBM selon vos résultats. Prenez vos précautions en vue d'une réorientation, inscrivez vous sur ParcourSup.");
-                                }
-                                frame.dispose();
-                                System.exit(0);
-                            } else if (eleve.getCurrentUV().getListeProblemes().isEmpty()){
-                                System.out.println("GG");
+                            // Si l'élève a résolu tous les problèmes de l'UV actuelle
+                            if (eleve.getCurrentUV().getListeProblemes().isEmpty()) {
                                 JOptionPane.showMessageDialog(frame, "Tous les problèmes de cette UV ont été résolus.");
                                 askForUVSelection();
                             } else {
                                 displayProblemWithOptions();
                             }
-                        } else if (status == Problemes.ValidationStatus.ECHEC){
+                        }
+                    } else {
+                        // Si la proposition échoue, gérer les erreurs et les tentatives restantes
+                        if (status == Problemes.ValidationStatus.NO_MORE_TRIES) {
+                            JOptionPane.showMessageDialog(frame, "Echec ! Vous avez épuisé toutes vos tentatives.");
+                            if (uvManager.getListeUV().isEmpty()) {
+                                JOptionPane.showMessageDialog(frame, "Bravo, vous avez fini le TC !");
+                                System.exit(0);
+                            } else {
+                                displayProblemWithOptions();
+                            }
+                        } else {
                             JOptionPane.showMessageDialog(frame, "Echec ! Il vous reste " + probleme.getTentativesRestantes() + " tentatives.");
                         }
                     }
                     outputArea.append("Hypothèse proposée : " + hypothese + "\n");
+                    updateStudentInfo();
                 }
             }
         });
-        buttonPanel.add(guessButton);
+        buttonPanel.add(guessButton);  // Ajoute le bouton "Proposer une hypothèse"
 
+        // Bouton pour quitter le programme
         JButton quitButton = new JButton("Quitter");
         quitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.dispose();
+                frame.dispose();  // Ferme la fenêtre
             }
         });
-        buttonPanel.add(quitButton);
+        buttonPanel.add(quitButton);  // Ajoute le bouton "Quitter"
 
+        // Ajoute les boutons au panneau principal
         panel.add(buttonPanel, BorderLayout.CENTER);
 
-        // Rafraîchissement de l'interface
         panel.revalidate();
         panel.repaint();
-    }
-
-    private void handleUserInput(String input) {
-        // Logique pour gérer les entrées utilisateur
     }
 }
