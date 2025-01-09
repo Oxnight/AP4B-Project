@@ -271,7 +271,7 @@ public class GUI {
                             if (eleve.getNombreUVvalidees() >= 1) {
                                 JOptionPane.showMessageDialog(frame, "Vous avez l'autorisation de partir en FISE INFORMATIQUE!", "Félicitations", JOptionPane.INFORMATION_MESSAGE);
                             } else {
-                                JOptionPane.showMessageDialog(frame, "Convoqué devant le 2ème jury de suivi. Très mauvais semestre. Risque de réorientation.", "Dommage...", JOptionPane.INFORMATION_MESSAGE);             }
+                                JOptionPane.showMessageDialog(frame, "Convoqué devant le 2ème jury de suivi. Très mauvais semestre. Risque de réorientation.", "Dommage...", JOptionPane.ERROR_MESSAGE);             }
                             frame.dispose();
                             System.exit(0);
                         } else {

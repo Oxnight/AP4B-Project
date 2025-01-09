@@ -7,7 +7,6 @@ import java.util.*;
 public class UVManager {
     private final List<UV> listeUV; // Liste des UV disponibles
     private final List<String> listeEleves; // Liste des noms des étudiants
-    private Eleve eleve; // Référence à un élève
 
     /**
      * Constructeur de la classe UVManager.
