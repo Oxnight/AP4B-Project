@@ -230,6 +230,7 @@ public class Problemes {
                 if (!isGUI) {
                     System.out.println(indice4);
                 }
+                return indice4;
             } else {
                 String indice5 = "Pensez à bien relire les aides données.\n";
                 if (!isGUI) {
@@ -262,6 +263,7 @@ public class Problemes {
                 if (!isGUI) {
                     System.out.println(indice4);
                 }
+                return indice4;
             } else {
                 String indice5 = "Pensez à bien relire les aides données.\n";
                 if (!isGUI) {
@@ -282,7 +284,7 @@ public class Problemes {
                     System.out.println(indice2);
                 }
                 return indice2 + "\n" + indice1;
-            } else if (hypothese.matches("^9\\.7[0-9]$")) {
+            } else if (hypothese.matches("^9\\.7[0-9]$") && !hypothese.equals("9.75")) {
                 char secondDecimal = hypothese.charAt(3);
                 if (secondDecimal != '5') {
                     String indice3 = "L'arrondi n'est pas correct.\n";
@@ -302,6 +304,7 @@ public class Problemes {
                 if (!isGUI) {
                     System.out.println(indice5);
                 }
+                return indice5;
             } else {
                 String indice6 = "Pensez à bien relire les aides données.\n";
                 if (!isGUI) {
@@ -324,7 +327,7 @@ public class Problemes {
                     System.out.println(indice2);
                 }
                 return indice2 + "\n" + indice1;
-            } else if (hypothese.matches("^105\\.1[0-9]$")) {
+            } else if (hypothese.matches("^105\\.1[0-9]$") && !hypothese.equals("105.19")) {
                 char secondDecimal = hypothese.charAt(5);
                 if (secondDecimal != '9') {
                     String indice3 = "L'arrondi n'est pas correct.\n";
@@ -344,6 +347,7 @@ public class Problemes {
                 if (!isGUI) {
                     System.out.println(indice5);
                 }
+                return indice5;
             } else {
                 String indice6 = "Pensez à bien relire les aides données.\n";
                 if (!isGUI) {

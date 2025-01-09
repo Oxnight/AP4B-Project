@@ -36,7 +36,7 @@ public class GUI {
      */
     private void initUI() {
         // Initialisation de la fenêtre principale
-        frame = new JFrame("Gestion des Problèmes");
+        frame = new JFrame("AP4B - Turing Machine");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(600, 400);  // Taille de la fenêtre
 
@@ -78,7 +78,7 @@ public class GUI {
                         "5. Si vous échouez, vous ne validez pas l'UV.\n" +
                         "6. Si vous passez tous les problèmes, vous pouvez passer à l'UV suivante.\n" +
                         "7. Si vous validez toutes les UV, vous avez fini le TC (et passez en branche) !";
-                JOptionPane.showMessageDialog(frame, regleTexte);  // Affiche une boîte de dialogue avec les règles
+                JOptionPane.showMessageDialog(frame, regleTexte, "Règles", JOptionPane.INFORMATION_MESSAGE);  // Affiche une boîte de dialogue avec les règles
             }
         });
         reglePanel.add(regleButton, BorderLayout.EAST);
@@ -142,7 +142,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 String name = nameField.getText().trim();  // Récupère le nom entré
                 if (name.isEmpty()) {  // Si le nom est vide, affiche un message d'erreur
-                    JOptionPane.showMessageDialog(frame, "Le nom ne peut pas être vide. Veuillez entrer un nom.");
+                    JOptionPane.showMessageDialog(frame, "Le nom ne peut pas être vide. Veuillez entrer un nom.", "Erreur", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     eleve.setName(name);  // Définit le nom de l'élève
                     updateStudentInfo();  // Met à jour les informations de l'élève
@@ -180,7 +180,7 @@ public class GUI {
 
         // Pour chaque UV, un bouton est créé
         for (UV uv : uvManager.getListeUV()) {
-            JButton uvButton = new JButton(uv.getName());
+            JButton uvButton = new JButton(uv.getName() + " - " + uv.getDescription());
             uvButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -224,19 +224,20 @@ public class GUI {
         hintButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String indice = JOptionPane.showInputDialog(frame, "Entrez votre hypothèse :");
+
+                String indice = JOptionPane.showInputDialog(frame, "Entrez votre hypothèse :", "Indice", JOptionPane.QUESTION_MESSAGE);
 
                 // Si l'UV est "PC20", on s'assure que l'hypothèse a un format valide
                 if (eleve.getCurrentUV().getName().equals("PC20")) {
                     while (indice != null && !indice.matches("\\d{4}")) {
-                        JOptionPane.showMessageDialog(frame, "L'hypothèse doit être composée de 4 chiffres. Veuillez réessayer.");
-                        indice = JOptionPane.showInputDialog(frame, "Entrez votre hypothèse :");
+                        JOptionPane.showMessageDialog(frame, "L'hypothèse doit être composée de 4 chiffres. Veuillez réessayer.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                        indice = JOptionPane.showInputDialog(frame, "Entrez votre hypothèse :", "Indice", JOptionPane.QUESTION_MESSAGE);
                     }
                 }
 
                 // Affichage de l'indice si l'entrée n'est pas vide
                 if (indice != null && !indice.trim().isEmpty()) {
-                    JOptionPane.showMessageDialog(frame, "Votre hypothèse : " + indice + "\n\nIndice : \n" + probleme.interroger(indice, true));
+                    JOptionPane.showMessageDialog(frame, "Votre hypothèse : " + indice + "\n\nIndice : \n" + probleme.interroger(indice, true), "Indice", JOptionPane.INFORMATION_MESSAGE);
                     outputArea.append("Indice demandé.\n");
                 }
             }
@@ -248,13 +249,13 @@ public class GUI {
         guessButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String hypothese = JOptionPane.showInputDialog(frame, "Entrez votre hypothèse :");
+                String hypothese = JOptionPane.showInputDialog(frame, "Entrez votre hypothèse :", "Proposition", JOptionPane.QUESTION_MESSAGE);
 
                 // Vérification pour l'UV "PC20" pour s'assurer que l'hypothèse est valide
                 if (eleve.getCurrentUV().getName().equals("PC20")) {
                     while (hypothese != null && !hypothese.matches("\\d{4}")) {
-                        JOptionPane.showMessageDialog(frame, "L'hypothèse doit être composée de 4 chiffres. Veuillez réessayer.");
-                        hypothese = JOptionPane.showInputDialog(frame, "Entrez votre hypothèse :");
+                        JOptionPane.showMessageDialog(frame, "L'hypothèse doit être composée de 4 chiffres. Veuillez réessayer.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                        hypothese = JOptionPane.showInputDialog(frame, "Entrez votre hypothèse :", "Proposition", JOptionPane.QUESTION_MESSAGE);
                     }
                 }
 
@@ -263,21 +264,20 @@ public class GUI {
                     Problemes.ValidationStatus status = probleme.effectuerHypothese(hypothese, true);
                     // Si la proposition est correcte, l'élève passe au problème suivant ou termine
                     if (status == Problemes.ValidationStatus.SUCCESS) {
-                        JOptionPane.showMessageDialog(frame, "Bravo, vous avez résolu le problème !");
+                        JOptionPane.showMessageDialog(frame, "Bravo, vous avez résolu le problème !", "Succès", JOptionPane.INFORMATION_MESSAGE);
                         if (uvManager.getListeUV().isEmpty()) {
-                            JOptionPane.showMessageDialog(frame, "Bravo, vous avez fini le TC !");
+                            JOptionPane.showMessageDialog(frame, "Bravo, vous avez fini le TC !", "Félicitations", JOptionPane.INFORMATION_MESSAGE);
                             // Si l'élève a validé au moins 2 UV, il peut passer en FISE INFORMATIQUE
                             if (eleve.getNombreUVvalidees() >= 1) {
-                                JOptionPane.showMessageDialog(frame, "Vous avez l'autorisation de partir en FISE INFORMATIQUE!");
+                                JOptionPane.showMessageDialog(frame, "Vous avez l'autorisation de partir en FISE INFORMATIQUE!", "Félicitations", JOptionPane.INFORMATION_MESSAGE);
                             } else {
-                                JOptionPane.showMessageDialog(frame, "Convoqué devant le 2ème jury de suivi. Très mauvais semestre. Risque de réorientation.");
-                            }
+                                JOptionPane.showMessageDialog(frame, "Convoqué devant le 2ème jury de suivi. Très mauvais semestre. Risque de réorientation.", "Dommage...", JOptionPane.INFORMATION_MESSAGE);             }
                             frame.dispose();
                             System.exit(0);
                         } else {
                             // Si l'élève a résolu tous les problèmes de l'UV actuelle
                             if (eleve.getCurrentUV().getListeProblemes().isEmpty()) {
-                                JOptionPane.showMessageDialog(frame, "Tous les problèmes de cette UV ont été résolus.");
+                                JOptionPane.showMessageDialog(frame, "Tous les problèmes de cette UV ont été résolus.", "...", JOptionPane.INFORMATION_MESSAGE);
                                 askForUVSelection();
                             } else {
                                 displayProblemWithOptions();
@@ -286,15 +286,15 @@ public class GUI {
                     } else {
                         // Si la proposition échoue, gérer les erreurs et les tentatives restantes
                         if (status == Problemes.ValidationStatus.NO_MORE_TRIES) {
-                            JOptionPane.showMessageDialog(frame, "Echec ! Vous avez épuisé toutes vos tentatives.");
+                            JOptionPane.showMessageDialog(frame, "Echec ! Vous avez épuisé toutes vos tentatives.", "Echec", JOptionPane.ERROR_MESSAGE);
                             if (uvManager.getListeUV().isEmpty()) {
-                                JOptionPane.showMessageDialog(frame, "Bravo, vous avez fini le TC !");
+                                JOptionPane.showMessageDialog(frame, "Bravo, vous avez fini le TC !", "Félicitations", JOptionPane.INFORMATION_MESSAGE);
                                 System.exit(0);
                             } else {
                                 displayProblemWithOptions();
                             }
                         } else {
-                            JOptionPane.showMessageDialog(frame, "Echec ! Il vous reste " + probleme.getTentativesRestantes() + " tentatives.");
+                            JOptionPane.showMessageDialog(frame, "Echec ! Il vous reste " + probleme.getTentativesRestantes() + " tentatives.", "Echec", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                     outputArea.append("Hypothèse proposée : " + hypothese + "\n");
