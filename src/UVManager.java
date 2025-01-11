@@ -96,7 +96,7 @@ public class UVManager {
         if (!isGUI) {
             System.out.println("\nNouveau problème : " + selectedEnonce); // Affiche le problème si l'application n'est pas en mode GUI
         }
-        return selectedEnonce; // Retourne l'énoncé du problème sélectionné
+        return selectedEnonce; // Retourne l'énoncé du problème sélectionné pour GUI
     }
 
     /**
