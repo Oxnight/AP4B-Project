@@ -31,7 +31,7 @@ public class MainGUI {
         mt3f.ajouterProbleme("∑ de 𝒏 allant de 1 à 100 de (1 + 1/𝒏) arrondi à 2 décimales au supérieur", "105.19");
 
         // Ajout de l'UV PC20 et des problèmes associés
-        UV pc20 = new UV("PC20", "On fait du MasterMind ici, vient c'est cool");  // Création de l'UV "PC20" (MasterMind)
+        UV pc20 = new UV("PC20", "On fait du MasterMind ici, viens c'est cool");  // Création de l'UV "PC20" (MasterMind)
         uvManager.ajouterUV(pc20);  // Ajoute l'UV "PC20" au gestionnaire
 
         // Ajout des problèmes pour l'UV "PC20"

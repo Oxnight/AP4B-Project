@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -61,10 +62,13 @@ public class GUI {
             }
         });
 
-        // Panneau en bas pour afficher un bouton "Règle"
+        // Panneau en bas pour afficher les boutons "Règle" et "Quitter"
         JPanel reglePanel = new JPanel(new BorderLayout());
+
+        // Panneau pour les boutons avec un FlowLayout aligné à droite
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton regleButton = new JButton("Règle");
-        regleButton.setPreferredSize(new Dimension(85, 40));  // Taille du bouton "Règle"
+        regleButton.setPreferredSize(new Dimension(75, 35));  // Taille du bouton "Règle"
 
         // Affiche les règles du jeu lorsqu'on clique sur le bouton "Règle"
         regleButton.addActionListener(new ActionListener() {
@@ -81,13 +85,39 @@ public class GUI {
                 JOptionPane.showMessageDialog(frame, regleTexte, "Règles", JOptionPane.INFORMATION_MESSAGE);  // Affiche une boîte de dialogue avec les règles
             }
         });
-        reglePanel.add(regleButton, BorderLayout.EAST);
+        buttonPanel.add(regleButton);
+
+        // Création du bouton "Quitter"
+        JButton quitButton = new JButton("Quitter");
+        quitButton.setPreferredSize(new Dimension(75, 35));  // Taille du bouton "Quitter"
+
+        // Action pour quitter l'application lorsqu'on clique sur le bouton "Quitter"
+        quitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();  // Ferme la fenêtre
+            }
+        });
+        buttonPanel.add(quitButton);
+
+        // Ajout du panneau des boutons au panneau des règles
+        reglePanel.add(buttonPanel, BorderLayout.EAST);
 
         // Affichage des informations de l'élève dans l'interface
         studentInfoLabel = new JLabel();
         updateStudentInfo();  // Met à jour les informations de l'élève à l'initialisation
         reglePanel.add(studentInfoLabel, BorderLayout.WEST);
         studentInfoLabel.setVisible(false);  // L'étiquette est initialement cachée
+
+        // Panneau pour le logo
+        JPanel logoPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));  // Panneau avec FlowLayout pour centrer le logo
+        ImageIcon logoIcon = new ImageIcon("img/logoUTBM.png"); // Chargement du logo
+        Image resizedLogo = logoIcon.getImage().getScaledInstance(120, 55, Image.SCALE_SMOOTH);  // Redimensionne le logo
+        ImageIcon resizedLogoIcon = new ImageIcon(resizedLogo);  // Crée une nouvelle icône redimensionnée
+        JLabel logoLabel = new JLabel(resizedLogoIcon); // Crée une étiquette pour afficher le logo
+
+        logoPanel.add(logoLabel); // Ajout du logo au panneau
+        frame.add(logoPanel, BorderLayout.NORTH); // Ajout du panneau du logo en haut de la fenêtre
 
         frame.add(reglePanel, BorderLayout.SOUTH);  // Ajoute le panneau des règles et infos en bas
 
@@ -101,7 +131,7 @@ public class GUI {
      * Met à jour l'étiquette d'informations de l'élève.
      */
     private void updateStudentInfo() {
-        String info = String.format("Nom: %s | Tentatives restantes: %d | UV validées: %d",
+        String info = String.format("  Nom: %s | Tentatives restantes: %d | UV validées: %d",
                 eleve.getName(), probleme.getTentativesRestantes(), eleve.getNombreUVvalidees());
         studentInfoLabel.setText(info);  // Affiche les informations de l'élève
     }
@@ -173,14 +203,29 @@ public class GUI {
     private void askForUVSelection() {
         panel.removeAll();  // Supprime tous les composants précédents
         studentInfoLabel.setVisible(true);  // Rendre l'étiquette des informations de l'élève visible
-        panel.setLayout(new GridLayout(uvManager.getListeUV().size() + 2, 1));  // Affiche une liste de boutons pour chaque UV
 
+        panel.setLayout(new BorderLayout());  // Utilise un BorderLayout pour le panneau principal
+
+        // Panneau pour le label centré
+        JPanel labelPanel = new JPanel(new BorderLayout());
         JLabel label = new JLabel("Choisissez une UV :");
-        panel.add(label);
+        label.setHorizontalAlignment(SwingConstants.CENTER);  // Centre le texte du label
+        label.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));  // Ajoute une bordure vide pour l'espacement
+        labelPanel.add(label, BorderLayout.CENTER);
+        panel.add(labelPanel, BorderLayout.NORTH);  // Ajoute le panneau du label en haut
+
+        // Panneau pour les boutons avec un GridBagLayout
+        JPanel buttonPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(20, 20, 0, 20);  // Espacement autour des composants
+        gbc.gridx = GridBagConstraints.RELATIVE;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
 
         // Pour chaque UV, un bouton est créé
         for (UV uv : uvManager.getListeUV()) {
-            JButton uvButton = new JButton(uv.getName() + " - " + uv.getDescription());
+            JButton uvButton = new JButton(uv.getName());
+            uvButton.setPreferredSize(new Dimension(200, 100));  // Définit une taille préférée plus grande pour les boutons
             uvButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -188,8 +233,10 @@ public class GUI {
                     displayProblemWithOptions();  // Affiche le problème associé à cette UV
                 }
             });
-            panel.add(uvButton);  // Ajoute le bouton de l'UV au panneau
+            buttonPanel.add(uvButton, gbc);  // Ajoute le bouton de l'UV au panneau des boutons
         }
+
+        panel.add(buttonPanel, BorderLayout.CENTER);  // Ajoute le panneau des boutons au centre
 
         panel.revalidate();
         panel.repaint();
