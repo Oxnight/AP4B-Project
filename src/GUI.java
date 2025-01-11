@@ -50,7 +50,7 @@ public class GUI {
         outputArea.setEditable(false);  // Empêche l'édition par l'utilisateur
         panel.add(new JScrollPane(outputArea), BorderLayout.CENTER);
 
-        // Champ de texte pour l'entrée de l'utilisateur (ici on l'utilise pour l'identification)
+        // Champ de texte pour l'entrée de l'utilisateur
         inputField = new JTextField();
         panel.add(inputField, BorderLayout.SOUTH);
 
@@ -67,7 +67,7 @@ public class GUI {
 
         // Panneau pour les boutons avec un FlowLayout aligné à droite
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton regleButton = new JButton("Règle");
+        JButton regleButton = new JButton("Règles");
         regleButton.setPreferredSize(new Dimension(75, 35));  // Taille du bouton "Règle"
 
         // Affiche les règles du jeu lorsqu'on clique sur le bouton "Règle"
@@ -149,20 +149,47 @@ public class GUI {
         gbc.insets = new Insets(10, 10, 10, 10);  // Espacement autour des composants
         gbc.anchor = GridBagConstraints.CENTER;  // Centrer les composants
 
-        // Label pour demander l'identification
+        // Texte de bienvenue centré
         gbc.gridx = 0;
         gbc.gridy = 0;
-        JLabel label = new JLabel("Veuillez vous identifier :");
-        centerPanel.add(label, gbc);
+        gbc.gridwidth = 2;  // Étend sur deux colonnes pour être centré
+        gbc.anchor = GridBagConstraints.CENTER;
+        JLabel welcomeLabel = new JLabel("Bienvenue dans l'examen qui déterminera l'avenir de vos études");
+        welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        welcomeLabel.setFont(new Font("", Font.BOLD, 16));
+        centerPanel.add(welcomeLabel, gbc);
 
-        // Champ de texte pour entrer le nom
-        gbc.gridx = 1;
+// Panel pour le label et le champ de texte (pour centrer ensemble)
+        JPanel inputPanel = new JPanel();
+        inputPanel.setLayout(new GridBagLayout());  // Utilisation de GridBagLayout pour aligner les éléments à l'intérieur
+        GridBagConstraints inputGbc = new GridBagConstraints();
+
+        // Label pour demander l'identification
+        inputGbc.gridx = 0;
+        inputGbc.gridy = 0;
+        inputGbc.anchor = GridBagConstraints.WEST;  // Aligne le label à gauche dans le panel
+        JLabel label = new JLabel("Veuillez vous identifier :");
+        inputPanel.add(label, inputGbc);
+
+        // Champ de texte pour entrer le nom avec un espace en bas du label
+        inputGbc.gridx = 1;  // À droite du label
+        inputGbc.gridy = 0;  // Même ligne que le label
+        inputGbc.anchor = GridBagConstraints.CENTER;  // Centré par rapport à la cellule
+        inputGbc.insets = new Insets(0, 30, 0, 0);  // Ajoute un petit espace en bas du label (0 haut, 10 gauche, 5 bas, 10 droite)
         JTextField nameField = new JTextField(20);
-        centerPanel.add(nameField, gbc);
+        nameField.setHorizontalAlignment(SwingConstants.CENTER);
+        inputPanel.add(nameField, inputGbc);
+
+        // Ajoutez le panel interne dans le conteneur principal, centré
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;  // Prend toute la largeur pour centrer
+        gbc.anchor = GridBagConstraints.CENTER;
+        centerPanel.add(inputPanel, gbc);
 
         // Bouton pour soumettre l'identification
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 3;  // Déplace le bouton sous le champ de texte
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         JButton submitButton = new JButton("Soumettre");
@@ -210,7 +237,6 @@ public class GUI {
         JPanel labelPanel = new JPanel(new BorderLayout());
         JLabel label = new JLabel("Choisissez une UV :");
         label.setHorizontalAlignment(SwingConstants.CENTER);  // Centre le texte du label
-        label.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));  // Ajoute une bordure vide pour l'espacement
         labelPanel.add(label, BorderLayout.CENTER);
         panel.add(labelPanel, BorderLayout.NORTH);  // Ajoute le panneau du label en haut
 
@@ -260,14 +286,20 @@ public class GUI {
         problemLabel.setVerticalAlignment(SwingConstants.TOP);
         problemLabel.setPreferredSize(new Dimension(100, 75));
         problemLabel.setFont(new Font("", Font.PLAIN, 15));  // Taille et style de la police
-        problemLabel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));  // Marges autour de l'énoncé
+        problemLabel.setBorder(BorderFactory.createEmptyBorder(35, 20, 0, 20));  // Marges autour de l'énoncé
         panel.add(problemLabel, BorderLayout.NORTH);
 
-        // Panneau pour les boutons (demander un indice, proposer une hypothèse, quitter)
-        JPanel buttonPanel = new JPanel(new GridLayout(3, 1));
+        // Panneau pour les boutons avec un GridBagLayout
+        JPanel buttonPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(0, 20, 0, 20);  // Espacement autour des composants
+        gbc.gridx = GridBagConstraints.RELATIVE;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
 
         // Bouton pour demander un indice
         JButton hintButton = new JButton("Demander un indice");
+        hintButton.setPreferredSize(new Dimension(200, 100));  // Taille du bouton "Indice"
         hintButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -289,10 +321,11 @@ public class GUI {
                 }
             }
         });
-        buttonPanel.add(hintButton);  // Ajoute le bouton "Demander un indice"
+        buttonPanel.add(hintButton, gbc);  // Ajoute le bouton "Demander un indice"
 
         // Bouton pour proposer une hypothèse
         JButton guessButton = new JButton("Proposer une hypothèse");
+        guessButton.setPreferredSize(new Dimension(200, 100));  // Taille du bouton "Hypothèse"
         guessButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -349,17 +382,7 @@ public class GUI {
                 }
             }
         });
-        buttonPanel.add(guessButton);  // Ajoute le bouton "Proposer une hypothèse"
-
-        // Bouton pour quitter le programme
-        JButton quitButton = new JButton("Quitter");
-        quitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();  // Ferme la fenêtre
-            }
-        });
-        buttonPanel.add(quitButton);  // Ajoute le bouton "Quitter"
+        buttonPanel.add(guessButton, gbc);  // Ajoute le bouton "Proposer une hypothèse"
 
         // Ajoute les boutons au panneau principal
         panel.add(buttonPanel, BorderLayout.CENTER);
