@@ -3,6 +3,7 @@ import java.awt.*;
 import java.net.URL;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.border.LineBorder;
 
 /**
  * Classe représentant l'interface graphique (GUI) permettant à l'élève d'interagir avec les problèmes d'UV.
@@ -40,9 +41,11 @@ public class GUI {
         frame = new JFrame("AP4B - Turing Machine");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(600, 400);  // Taille de la fenêtre
+        frame.getContentPane().setBackground(new Color(224, 240, 255));  // Couleur de fond de la fenêtre
 
         // Panneau principal qui contient tout le contenu
         panel = new JPanel(new BorderLayout());
+        panel.setOpaque(false); // Panneau transparent
         frame.add(panel, BorderLayout.CENTER);
 
         // Zone de texte pour afficher les résultats
@@ -64,11 +67,14 @@ public class GUI {
 
         // Panneau en bas pour afficher les boutons "Règle" et "Quitter"
         JPanel reglePanel = new JPanel(new BorderLayout());
+        reglePanel.setOpaque(false); // Panneau transparent
 
         // Panneau pour les boutons avec un FlowLayout aligné à droite
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.setOpaque(false); // Panneau transparent
         JButton regleButton = new JButton("Règles");
         regleButton.setPreferredSize(new Dimension(75, 35));  // Taille du bouton "Règle"
+        styleButton(regleButton);
 
         // Affiche les règles du jeu lorsqu'on clique sur le bouton "Règle"
         regleButton.addActionListener(new ActionListener() {
@@ -90,6 +96,7 @@ public class GUI {
         // Création du bouton "Quitter"
         JButton quitButton = new JButton("Quitter");
         quitButton.setPreferredSize(new Dimension(75, 35));  // Taille du bouton "Quitter"
+        styleButton(quitButton);
 
         // Action pour quitter l'application lorsqu'on clique sur le bouton "Quitter"
         quitButton.addActionListener(new ActionListener() {
@@ -111,6 +118,7 @@ public class GUI {
 
         // Panneau pour le logo
         JPanel logoPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));  // Panneau avec FlowLayout pour centrer le logo
+        logoPanel.setOpaque(false); // Panneau transparent
         ImageIcon logoIcon = new ImageIcon("img/logoUTBM.png"); // Chargement du logo
         Image resizedLogo = logoIcon.getImage().getScaledInstance(120, 55, Image.SCALE_SMOOTH);  // Redimensionne le logo
         ImageIcon resizedLogoIcon = new ImageIcon(resizedLogo);  // Crée une nouvelle icône redimensionnée
@@ -137,6 +145,31 @@ public class GUI {
     }
 
     /**
+     * Applique un style personnalisé aux boutons.
+     *
+     * @param button Le bouton à styliser.
+     */
+    private void styleButton(JButton button) {
+        button.setBackground(new Color(100, 149, 237)); // Couleur de fond initiale (bleu)
+        button.setForeground(Color.WHITE); // Couleur du texte (blanc)
+        button.setBorder(new LineBorder(new Color(70, 130, 180), 2)); // Bordure bleue foncée avec une épaisseur de 2px
+        button.setFocusPainted(false); // Supprime le contour de focus par défaut
+
+        // Ajout d'un écouteur pour modifier les couleurs au survol de la souris
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(135, 206, 235)); // Couleur plus claire lorsque la souris survole le bouton
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(100, 149, 237)); // Restauration de la couleur originale lorsque la souris quitte le bouton
+            }
+        });
+    }
+
+    /**
      * Affiche une interface demandant à l'élève de s'identifier.
      */
     private void askForIdentification() {
@@ -145,6 +178,7 @@ public class GUI {
 
         // Panneau central pour l'identification
         JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.setOpaque(false); // Panneau transparent
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);  // Espacement autour des composants
         gbc.anchor = GridBagConstraints.CENTER;  // Centrer les composants
@@ -161,6 +195,7 @@ public class GUI {
 
 // Panel pour le label et le champ de texte (pour centrer ensemble)
         JPanel inputPanel = new JPanel();
+        inputPanel.setOpaque(false); // Panneau transparent
         inputPanel.setLayout(new GridBagLayout());  // Utilisation de GridBagLayout pour aligner les éléments à l'intérieur
         GridBagConstraints inputGbc = new GridBagConstraints();
 
@@ -194,6 +229,7 @@ public class GUI {
         gbc.anchor = GridBagConstraints.CENTER;
         JButton submitButton = new JButton("Soumettre");
         submitButton.setPreferredSize(new Dimension(200, 50));
+        styleButton(submitButton);
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -235,6 +271,7 @@ public class GUI {
 
         // Panneau pour le label centré
         JPanel labelPanel = new JPanel(new BorderLayout());
+        labelPanel.setOpaque(false); // Panneau transparent
         JLabel label = new JLabel("Choisissez une UV :");
         label.setHorizontalAlignment(SwingConstants.CENTER);  // Centre le texte du label
         labelPanel.add(label, BorderLayout.CENTER);
@@ -242,6 +279,7 @@ public class GUI {
 
         // Panneau pour les boutons avec un GridBagLayout
         JPanel buttonPanel = new JPanel(new GridBagLayout());
+        buttonPanel.setOpaque(false); // Panneau transparent
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(20, 20, 0, 20);  // Espacement autour des composants
         gbc.gridx = GridBagConstraints.RELATIVE;
@@ -252,6 +290,7 @@ public class GUI {
         for (UV uv : uvManager.getListeUV()) {
             JButton uvButton = new JButton(uv.getName());
             uvButton.setPreferredSize(new Dimension(200, 100));  // Définit une taille préférée plus grande pour les boutons
+            styleButton(uvButton);
             uvButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -291,6 +330,7 @@ public class GUI {
 
         // Panneau pour les boutons avec un GridBagLayout
         JPanel buttonPanel = new JPanel(new GridBagLayout());
+        buttonPanel.setOpaque(false); // Panneau transparent
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(0, 20, 0, 20);  // Espacement autour des composants
         gbc.gridx = GridBagConstraints.RELATIVE;
@@ -300,6 +340,7 @@ public class GUI {
         // Bouton pour demander un indice
         JButton hintButton = new JButton("Demander un indice");
         hintButton.setPreferredSize(new Dimension(200, 100));  // Taille du bouton "Indice"
+        styleButton(hintButton);
         hintButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -326,6 +367,7 @@ public class GUI {
         // Bouton pour proposer une hypothèse
         JButton guessButton = new JButton("Proposer une hypothèse");
         guessButton.setPreferredSize(new Dimension(200, 100));  // Taille du bouton "Hypothèse"
+        styleButton(guessButton);
         guessButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -358,6 +400,11 @@ public class GUI {
                             // Si l'élève a résolu tous les problèmes de l'UV actuelle
                             if (eleve.getCurrentUV().getListeProblemes().isEmpty()) {
                                 JOptionPane.showMessageDialog(frame, "Tous les problèmes de cette UV ont été résolus.", "...", JOptionPane.INFORMATION_MESSAGE);
+                                if (eleve.getScore() >= 2) {
+                                    JOptionPane.showMessageDialog(frame, "Félicitations, vous avez validé l'UV !", "Félicitations", JOptionPane.INFORMATION_MESSAGE);
+                                } else {
+                                    JOptionPane.showMessageDialog(frame, "Vous n'avez pas validé l'UV.", "Echec", JOptionPane.ERROR_MESSAGE);
+                                }
                                 askForUVSelection();
                             } else {
                                 displayProblemWithOptions();
@@ -369,9 +416,25 @@ public class GUI {
                             JOptionPane.showMessageDialog(frame, "Echec ! Vous avez épuisé toutes vos tentatives.", "Echec", JOptionPane.ERROR_MESSAGE);
                             if (uvManager.getListeUV().isEmpty()) {
                                 JOptionPane.showMessageDialog(frame, "Bravo, vous avez fini le TC !", "Félicitations", JOptionPane.INFORMATION_MESSAGE);
+                                if (eleve.getNombreUVvalidees() >= 1) {
+                                    JOptionPane.showMessageDialog(frame, "Vous avez l'autorisation de partir en FISE INFORMATIQUE!", "Félicitations", JOptionPane.INFORMATION_MESSAGE);
+                                } else {
+                                    JOptionPane.showMessageDialog(frame, "Convoqué devant le 2ème jury de suivi. Très mauvais semestre. Risque de réorientation.", "Dommage...", JOptionPane.ERROR_MESSAGE);             }
+                                frame.dispose();
                                 System.exit(0);
                             } else {
-                                displayProblemWithOptions();
+                                // Si l'élève a résolu tous les problèmes de l'UV actuelle
+                                if (eleve.getCurrentUV().getListeProblemes().isEmpty()) {
+                                    JOptionPane.showMessageDialog(frame, "Tous les problèmes de cette UV ont été résolus.", "...", JOptionPane.INFORMATION_MESSAGE);
+                                    if (eleve.getScore() >= 2) {
+                                        JOptionPane.showMessageDialog(frame, "Félicitations, vous avez validé l'UV !", "Félicitations", JOptionPane.INFORMATION_MESSAGE);
+                                    } else {
+                                        JOptionPane.showMessageDialog(frame, "Vous n'avez pas validé l'UV.", "Echec", JOptionPane.ERROR_MESSAGE);
+                                    }
+                                    askForUVSelection();
+                                } else {
+                                    displayProblemWithOptions();
+                                }
                             }
                         } else {
                             JOptionPane.showMessageDialog(frame, "Echec ! Il vous reste " + probleme.getTentativesRestantes() + " tentatives.", "Echec", JOptionPane.ERROR_MESSAGE);

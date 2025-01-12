@@ -276,7 +276,9 @@ public class Problemes {
             String indice1 = "\nPour résoudre ce produit, il faut le développer.\n" +
                     "On peut remarquer que le terme général est de la forme 1 + 1/(2n-1).\n" +
                     "Il faut donc développer ce produit jusqu'à n=30 et arrondir à 2 décimales supérieures.\n";
-            System.out.println(indice1);
+            if (!isGUI) {
+                System.out.println(indice1);
+            }
 
             if (!hypothese.matches("^\\d+(\\.\\d{2})?$")) {
                 String indice2 = "L'hypothèse doit être un nombre à deux décimales.\n";
