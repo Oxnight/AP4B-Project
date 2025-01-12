@@ -65,9 +65,9 @@ public class Problemes {
      * Demande à l'élève d'entrer une hypothèse pour résoudre le problème.
      */
     public void demanderHypothese() {
-        System.out.println("\nVeuillez entrer votre hypothèse : ");
-        System.out.println("Le problème est : " + enonce);
+        System.out.println("\nLe problème est : " + enonce);
         Scanner sc = new Scanner(System.in);
+        System.out.print("Veuillez entrer votre hypothèse : ");
         String hypothese = sc.nextLine(); // Lecture de l'hypothèse de l'élève.
         effectuerHypothese(hypothese, false); // Vérification de l'hypothèse.
     }
@@ -98,7 +98,7 @@ public class Problemes {
             if (tentativesRestantes == 0) {
                 // Tentatives épuisées
                 if (!isGUI) {
-                    System.out.println("Echec ! Vous avez épuisé toutes vos tentatives.");
+                    System.out.println("\nEchec ! Vous avez épuisé toutes vos tentatives.");
                 }
                 eleve.afficherScore(false);
                 nouveauProbleme(isGUI); // Passer au prochain problème.
@@ -145,8 +145,8 @@ public class Problemes {
                 }
             }
             uvManager.retirerUV(currentUV); // Retirer l'UV de la liste de l'élève.
-            eleve.resetScore(); // Réinitialiser le score de l'élève.
             if (!isGUI) {
+                eleve.resetScore(); // Réinitialiser le score de l'élève.
                 this.setEnonce(uvManager.selectionnerProbleme(uvManager.selectionnerUV(eleve), isGUI)); // Sélectionner un nouveau problème dans la prochaine UV.
             }
         }
@@ -156,9 +156,9 @@ public class Problemes {
      * L'élève demande un indice pour l'aider à résoudre le problème.
      */
     public void demanderIndice() {
-        System.out.println("\nVeuillez entrer une hypothèse : ");
-        System.out.println("Le problème est : " + enonce);
+        System.out.println("\nLe problème est : " + enonce);
         Scanner sc = new Scanner(System.in);
+        System.out.print("Veuillez entrer une hypothèse : ");
         String hypothese = sc.nextLine(); // Lecture de l'hypothèse pour demander un indice.
 
         if (eleve.getCurrentUV().getName().equals("PC20")) {
@@ -412,12 +412,12 @@ public class Problemes {
         // Retourne le feedback
         String indice;
         if (bulls == 4) {
-            indice = "Bravo, vous avez résolu le problème! Veuillez la reporter dans l'onglet 'Proposer une hypothese'.";
+            indice = "Bravo, vous avez résolu le problème ! Veuillez la reporter dans l'onglet 'Proposer une hypothese'.";
         } else {
             indice = "Bons chiffres à la bonne position: " + bulls + "\nBons chiffres à la mauvaise position: " + cows;
         }
         if (!isGUI) {
-            System.out.println(indice);
+            System.out.println("\n" + indice);
         }
         return indice;
     }

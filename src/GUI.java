@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.net.URL;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.border.LineBorder;
@@ -295,6 +294,7 @@ public class GUI {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     eleve.setCurrentUV(uv);  // Définit l'UV actuelle de l'élève
+                    eleve.resetScore();
                     displayProblemWithOptions();  // Affiche le problème associé à cette UV
                 }
             });
@@ -407,6 +407,7 @@ public class GUI {
                                 }
                                 askForUVSelection();
                             } else {
+                                JOptionPane.showMessageDialog(frame, "Voici un nouveau problème (il en reste encore " + eleve.getCurrentUV().getListeProblemes().size() + ").", "Nouveau problème", JOptionPane.INFORMATION_MESSAGE);
                                 displayProblemWithOptions();
                             }
                         }
@@ -433,6 +434,7 @@ public class GUI {
                                     }
                                     askForUVSelection();
                                 } else {
+                                    JOptionPane.showMessageDialog(frame, "Voici un nouveau problème (il en reste encore " + eleve.getCurrentUV().getListeProblemes().size() + ").", "Nouveau problème", JOptionPane.INFORMATION_MESSAGE);
                                     displayProblemWithOptions();
                                 }
                             }

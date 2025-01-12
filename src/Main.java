@@ -24,9 +24,9 @@ public class Main {
 
         // Ajout de problèmes à l'UV "MT3F"
         mt3f.ajouterProbleme(Arrays.deepToString(new int[][]{{9, 7, 5}, {3, 6, 8}, {2, 4, 1}}), "-143");
-        mt3f.ajouterProbleme("I = ∫ 𝒙 ∕ (𝒙^2+1) 𝑑𝒙", "1/2*ln(x^2+1)+c");
-        mt3f.ajouterProbleme("P = ∏ avec 𝒏 allant de 1 à 30 de (1 + 1/(2𝒏-1)) arrondi à 2 décimales au supérieur", "9.75");
-        mt3f.ajouterProbleme("∑ de 𝒏 allant de 1 à 100 de (1 + 1/𝒏) arrondi à 2 décimales au supérieur", "105.19");
+        mt3f.ajouterProbleme("I = Intégrale de x/(x^2 + 1) dx", "1/2*ln(x^2+1)+c");
+        mt3f.ajouterProbleme("P = Somme avec n allant de 1 à 30 de (1 + 1/(2n-1)) arrondi à 2 décimales au supérieur", "9.75");
+        mt3f.ajouterProbleme("Produit de n allant de 1 à 100 de (1 + 1/n) arrondi à 2 décimales au supérieur", "105.19");
 
         // Ajout de l'UV "PC20" et des problèmes associés
         UV pc20 = new UV("PC20", "On fait du MasterMind ici, viens c'est cool");  // Création d'une UV "PC20".
@@ -82,7 +82,7 @@ public class Main {
                         System.out.println("\nChoix invalide. Veuillez réessayer.");  // Si le choix est invalide, on demande à l'utilisateur de réessayer.
                 }
             } else {
-                System.out.println("\nEntrée invalide. Veuillez entrer un nombre entier.\n");
+                System.out.println("\nEntrée invalide. Veuillez entrer un nombre valide.\n");
                 scanner.next();  // Consomme l'entrée invalide
             }
         }
